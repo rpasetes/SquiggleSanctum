@@ -5,11 +5,18 @@ import useLocalStorage from "../hooks/useLocalStorage";
 
 const Editor = () => {
   const [text, setText] = useLocalStorage<string>("text", "");
+  const [words, setWords] = useLocalStorage<number>("words", 0);
 
   const updateText = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = event.target.value;
+    const words = val.split(/\s+/).filter(el => {
+      return el !== ""
+    });
+    
+    const count = words.length;
 
     setText(val);
+    setWords(count);
   };
 
   return (
@@ -22,7 +29,11 @@ const Editor = () => {
 
       <main className={styles.main}>
         <h1 className={styles.title}>SquiggleSanctum</h1>
-
+          <span className={styles.scoring}>
+            <span className={styles.center}>
+              words: <span className={styles.score}>{words}</span>
+            </span>
+          </span>
         <textarea 
           className={styles.gamearea}
           onChange={updateText}
