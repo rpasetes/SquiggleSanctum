@@ -7,14 +7,30 @@ const Editor = () => {
   const [text, setText] = useLocalStorage<string>("text", "");
   const [words, setWords] = useLocalStorage<number>("words", 0);
   const [flowing, setFlowing] = React.useState(false);
+  const [flowStart, setFlowStart] = React.useState<number>();
   const timeoutId = React.useRef<NodeJS.Timeout>();
+  const comboLength = React.useRef(0);
+  const comboPower = React.useRef(0);
+
+  const flowPower = Math.floor(Math.log(comboPower.current));
+
+  const comboScore = () => {
+    const flowLength = flowStart ? Date.now() - flowStart : 0;
+    return Math.round((flowLength / 100) * (comboLength.current / 10))
+  };
 
   const flowBreak = () => {
     setFlowing(false);
+    setFlowStart(0);
 
     if (timeoutId.current) {
       clearTimeout(timeoutId.current);
     }
+
+    comboLength.current = 0;
+    comboPower.current = 0;
+
+    console.log(comboPower);
   };
 
   const updateText = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -23,7 +39,6 @@ const Editor = () => {
     const words = val.split(/\s+/).filter(el => {
       return el !== ""
     });
-
     const count = words.length;
 
     setText(val);
@@ -32,7 +47,11 @@ const Editor = () => {
     // flow logic
     if (!flowing) {
       setFlowing(true);
+      setFlowStart(Date.now())
     }
+
+    comboLength.current += 1;
+    comboPower.current = comboScore();
 
     if (timeoutId.current) {
       clearTimeout(timeoutId.current)
@@ -55,7 +74,7 @@ const Editor = () => {
               words: <span className={styles.score}>{words}</span>
             </span>
             <span className={styles.score}>
-              {flowing ? "🔥" : "🤔"}
+              {flowing ? "🔥".repeat(flowPower < 1 ? 1 : flowPower) : "🤔"}
             </span>
           </span>
 
