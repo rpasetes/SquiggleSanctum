@@ -12,6 +12,28 @@
   align-items: center;
 }
 
+.newButton {
+  margin-top: 1rem;
+  padding: 0.3rem;
+}
+
+.scoring {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.score {
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.center {
+  text-align: center;
+}
+
 .footer {
   display: flex;
   flex: 1;
@@ -126,7 +148,7 @@
     border-color: #222;
   }
   .code {
-    background: #111;
+    background: rgb(33, 33, 33);
   }
   .logo img {
     filter: invert(1);

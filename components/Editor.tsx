@@ -12,7 +12,7 @@ const Editor = () => {
     const words = val.split(/\s+/).filter(el => {
       return el !== ""
     });
-    
+
     const count = words.length;
 
     setText(val);
@@ -34,11 +34,21 @@ const Editor = () => {
               words: <span className={styles.score}>{words}</span>
             </span>
           </span>
+
         <textarea 
           className={styles.gamearea}
           onChange={updateText}
           value={text}
         ></textarea>
+
+        <div>
+          <button 
+            onClick={() => {navigator.clipboard.writeText(text)}} 
+            className={styles.newButton}
+          >
+            Copy to Clipboard
+          </button>
+        </div>
       </main>
     </div>
   )
