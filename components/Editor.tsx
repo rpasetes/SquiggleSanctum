@@ -6,8 +6,19 @@ import useLocalStorage from "../hooks/useLocalStorage";
 const Editor = () => {
   const [text, setText] = useLocalStorage<string>("text", "");
   const [words, setWords] = useLocalStorage<number>("words", 0);
+  const [flowing, setFlowing] = React.useState(false);
+  const timeoutId = React.useRef<NodeJS.Timeout>();
+
+  const flowBreak = () => {
+    setFlowing(false);
+
+    if (timeoutId.current) {
+      clearTimeout(timeoutId.current);
+    }
+  };
 
   const updateText = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // textdata logic
     const val = event.target.value;
     const words = val.split(/\s+/).filter(el => {
       return el !== ""
@@ -17,6 +28,16 @@ const Editor = () => {
 
     setText(val);
     setWords(count);
+
+    // flow logic
+    if (!flowing) {
+      setFlowing(true);
+    }
+
+    if (timeoutId.current) {
+      clearTimeout(timeoutId.current)
+    }
+    timeoutId.current = setTimeout(flowBreak, 1500)
   };
 
   return (
@@ -32,6 +53,9 @@ const Editor = () => {
           <span className={styles.scoring}>
             <span className={styles.center}>
               words: <span className={styles.score}>{words}</span>
+            </span>
+            <span className={styles.score}>
+              {flowing ? "🔥" : "🤔"}
             </span>
           </span>
 
