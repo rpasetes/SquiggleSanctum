@@ -1,11 +1,12 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css"
-import React from "react";
+import React, { useCallback } from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 const Editor = () => {
   const [text, setText] = useLocalStorage<string>("text", "");
   const [words, setWords] = useLocalStorage<number>("words", 0);
+  const [totalWords, setTotalWords] = useLocalStorage<number>("total-words", 0);
   const [flowing, setFlowing] = React.useState(false);
   const [flowStart, setFlowStart] = React.useState<number>();
   const timeoutId = React.useRef<NodeJS.Timeout>();
@@ -59,6 +60,12 @@ const Editor = () => {
     timeoutId.current = setTimeout(flowBreak, 1500)
   };
 
+  const newSquiggleScreech = useCallback(() => {
+    setText("");
+    setWords(0);
+    setTotalWords((totalWords) => totalWords + words)
+  }, [setText, setWords, setTotalWords])
+
   return (
     <div className={styles.container}>
       <Head>
@@ -84,13 +91,20 @@ const Editor = () => {
           value={text}
         ></textarea>
 
-        <div>
-          <button 
+        <div className={styles.footer}>
+          all-time words: {totalWords}
+          <input 
             onClick={() => {navigator.clipboard.writeText(text)}} 
             className={styles.newButton}
-          >
-            Copy to Clipboard
-          </button>
+            value="Copy to Clipboard"
+            type="button"
+          ></input>
+          <input
+            onClick={newSquiggleScreech}
+            className={styles.newButton}
+            value="Screech New Squiggle"
+            type="button"
+          ></input>
         </div>
       </main>
     </div>
