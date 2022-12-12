@@ -61,6 +61,7 @@ const Editor = () => {
   };
 
   const newSquiggleScreech = useCallback(() => {
+    navigator.clipboard.writeText(text);
     setText("");
     setWords(0);
     setTotalWords((totalWords) => totalWords + words)
